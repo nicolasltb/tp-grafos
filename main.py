@@ -46,7 +46,7 @@ def main():
     parser.add_argument("input_file", help="the path for the input file. Ex: input.txt", type=str)
     args = parser.parse_args()
 
-    with open(args.input, "r") as f:
+    with open(args.input_file, "r") as f:
         n_vertex = int(f.readline().strip())
         n_edges = int(f.readline().strip())
 

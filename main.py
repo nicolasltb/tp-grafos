@@ -108,12 +108,12 @@ def main():
         brute_force_graph = copy.deepcopy(heuristic_graph)
 
         list_of_vetex = heuristic_graph.high_degree_heuristic()
-        print(f"Cobertura mínima de vértices: {list_of_vetex}")
-        print(f"Numero de vertices utilizados: {len(list_of_vetex)}\n")
+        print(f"Minimum vertex cover: {list_of_vetex}")
+        print(f"Number of vertex used: {len(list_of_vetex)}\n")
 
         list_of_vetex = brute_force_graph.brute_force_vertex_cover()
-        print(f"Cobertura mínima de vértices: {list_of_vetex}")
-        print(f"Numero de vertices utilizados: {len(list_of_vetex)}")
+        print(f"Minimum vertex cover: {list_of_vetex}")
+        print(f"Number of vertex used: {len(list_of_vetex)}")
 
 if __name__ == '__main__':
     main()

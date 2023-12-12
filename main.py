@@ -8,8 +8,8 @@ def log_time(func):
         start_time = time.time()
         result = func(*args, **kwargs)
         end_time = time.time()
-        tempo_execucao = end_time - start_time
-        print(f"The Algorithm {func.__name__} took {tempo_execucao:.5f} seconds to execute.")
+        execution_time = end_time - start_time
+        print(f"The Algorithm {func.__name__} took {execution_time:.5f} seconds to execute.")
 
         return result
     return wrapper
@@ -61,8 +61,18 @@ class Graph:
         min_vertex_cover = None
         min_size = float('inf')
 
+        total_combinations = sum(1 for k in range(1, self.vertices + 1) for _ in combinations(vertices, k))
+        current_combination = 0
+        last_printed_percentage = -1
+
         for k in range(1, self.vertices + 1):
             for subset in combinations(vertices, k):
+                current_combination += 1
+                progress_percentage = (current_combination / total_combinations) * 100
+                if progress_percentage >= last_printed_percentage + 6:
+                    last_printed_percentage = progress_percentage
+                    print(f"Progress: {progress_percentage:.1f}%")
+
                 temp_graph = self.copy_graph()
                 is_vertex_cover = True
 
@@ -80,6 +90,7 @@ class Graph:
                         min_size = len(subset)
                         min_vertex_cover = set(subset)
 
+        print()
         return list(min_vertex_cover)
 
     def copy_graph(self):
@@ -107,13 +118,17 @@ def main():
 
         brute_force_graph = copy.deepcopy(heuristic_graph)
 
-        list_of_vetex = heuristic_graph.high_degree_heuristic()
-        print(f"Minimum vertex cover: {list_of_vetex}")
-        print(f"Number of vertex used: {len(list_of_vetex)}\n")
+        print("Starting minimum vertex coverage using the highest degree heuristic...\n")
+        list_of_vertex = heuristic_graph.high_degree_heuristic()
+        print(f"Minimum vertex cover: {list_of_vertex}")
+        print(f"Number of vertex used: {len(list_of_vertex)}\n")
 
-        list_of_vetex = brute_force_graph.brute_force_vertex_cover()
-        print(f"Minimum vertex cover: {list_of_vetex}")
-        print(f"Number of vertex used: {len(list_of_vetex)}")
+        print("============================================================================\n")
+
+        print("Starting minimum vertex coverage using the brute force algorithm...\n")
+        list_of_vertex = brute_force_graph.brute_force_vertex_cover()
+        print(f"Minimum vertex cover: {list_of_vertex}")
+        print(f"Number of vertex used: {len(list_of_vertex)}")
 
 if __name__ == '__main__':
     main()

@@ -16,17 +16,22 @@ def log_time(func):
 
 class Graph:
 
-    def __init__(self, vertices: int):
-        self.vertices = vertices
-        self.list = {i: [] for i in range(vertices)}
+    def __init__(self):
+        self.list = {}
 
     def add_edge(self, u: int, v: int):
+        if u not in self.list:
+            self.list[u] = []
+        if v not in self.list:
+            self.list[v] = []
+
         self.list[u].append(v)
         self.list[v].append(u)
 
     def remove_edge(self, u: int, v: int):
-        self.list[u].remove(v)
-        self.list[v].remove(u)
+        if u in self.list and v in self.list:
+            self.list[u].remove(v)
+            self.list[v].remove(u)
 
     def get_degrees(self):
         return {v: len(neighbors) for v, neighbors in self.list.items()}
@@ -57,11 +62,11 @@ class Graph:
     
     @log_time
     def brute_force_vertex_cover(self):
-        vertices = list(range(self.vertices))
+        vertices = list(self.list.keys())
         min_vertex_cover = None
         min_size = float('inf')
 
-        for k in range(1, self.vertices + 1):
+        for k in range(1, len(vertices) + 1):
             for subset in combinations(vertices, k):
                 temp_graph = self.copy_graph()
                 is_vertex_cover = True
@@ -83,8 +88,8 @@ class Graph:
         return list(min_vertex_cover)
 
     def copy_graph(self):
-        new_graph = Graph(self.vertices)
-        new_graph.list = {v: neighbors.copy() for v, neighbors in self.list.items()}
+        new_graph = Graph()
+        new_graph.list = copy.deepcopy(self.list)
         return new_graph
 
     def is_empty(self):
@@ -96,18 +101,14 @@ def main():
     args = parser.parse_args()
 
     with open(args.input_file, "r") as f:
-        n_vertex = int(f.readline().strip())
-        n_edges = int(f.readline().strip())
+        graph = Graph()
+        for line in f:
+            u, v = map(int, line.strip().split())
+            graph.add_edge(u, v)
 
-        heuristic_graph = Graph(n_vertex)
+        brute_force_graph = copy.deepcopy(graph)
 
-        for _ in range(n_edges):
-            u, v = map(int, f.readline().strip().split())
-            heuristic_graph.add_edge(u, v)
-
-        brute_force_graph = copy.deepcopy(heuristic_graph)
-
-        list_of_vetex = heuristic_graph.high_degree_heuristic()
+        list_of_vetex = graph.high_degree_heuristic()
         print(f"Minimum vertex cover: {list_of_vetex}")
         print(f"Number of vertex used: {len(list_of_vetex)}\n")
 
